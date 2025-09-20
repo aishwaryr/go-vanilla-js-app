@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"fem.com/movie-site/handlers"
 	"fem.com/movie-site/logger"
 )
 
@@ -18,6 +19,10 @@ func initializeLogger() *logger.Logger {
 
 func main() {
 	logInstance := initializeLogger()
+
+	movieHandler := handlers.MovieHandler{}
+
+	http.HandleFunc("/api/movies/top", movieHandler.GetTopMovies)
 
 	http.Handle("/", http.FileServer(http.Dir("public")))
 
