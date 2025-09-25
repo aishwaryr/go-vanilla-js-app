@@ -18,7 +18,13 @@ func initializeLogger() *logger.Logger {
 }
 
 func main() {
+	// Log Initializer
 	logInstance := initializeLogger()
+
+	// Environmental Vatiables
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("No .env file was available")
+	}
 
 	movieHandler := handlers.MovieHandler{}
 
