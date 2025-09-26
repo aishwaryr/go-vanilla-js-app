@@ -1,11 +1,17 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
+	"os"
+
+	_ "github.com/lib/pq"
 
 	"fem.com/movie-site/handlers"
 	"fem.com/movie-site/logger"
+
+	"github.com/joho/godotenv"
 )
 
 func initializeLogger() *logger.Logger {
@@ -25,6 +31,16 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("No .env file was available")
 	}
+	// Connect to the DB
+	dbConnStr := os.Getenv("DATABASE_URL")
+	if dbConnStr == "" {
+		log.Fatal("DATABASE_URL not set")
+	}
+	db, err := sql.Open("postgres", dbConnStr)
+	if err != nil {
+		log.Fatalf("Failed to connect to the DB: %v", err)
+	}
+	defer db.Close()
 
 	movieHandler := handlers.MovieHandler{}
 
@@ -34,9 +50,8 @@ func main() {
 	http.Handle("/", http.FileServer(http.Dir("public")))
 
 	const addr = ":8080"
-	err := http.ListenAndServe(addr, nil)
-	if err != nil {
-		log.Fatalf("Server failed: %v", err)
+	if err := http.ListenAndServe(addr, nil); err != nil {
 		logInstance.Error("Server failed", err)
+		log.Fatalf("Server failed: %v", err)
 	}
 }
