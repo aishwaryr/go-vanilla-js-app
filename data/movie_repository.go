@@ -9,11 +9,17 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// emulating a class in go
+// the movie rep class will need a db and a logger
 type MovieRepository struct {
 	db     *sql.DB
 	logger *logger.Logger
 }
 
+// a factory
+// this is a design pattern used in go to construct instances of the
+// struct above, kind of a constructor in other languages.
+// this is how we create objects in go
 func NewMovieRepository(db *sql.DB, log *logger.Logger) (*MovieRepository, error) {
 	return &MovieRepository{
 		db:     db,
@@ -30,6 +36,18 @@ func (r *MovieRepository) GetTopMovies() ([]models.Movie, error) {
 		       popularity, language, poster_url, trailer_url
 		FROM movies
 		ORDER BY popularity DESC
+		LIMIT $1
+	`
+	return r.getMovies(query)
+}
+
+func (r *MovieRepository) GetRandomMovies() ([]models.Movie, error) {
+	// Fetch movies
+	query := `
+		SELECT id, tmdb_id, title, tagline, release_year, overview, score,
+		       popularity, language, poster_url, trailer_url
+		FROM movies
+		ORDER BY random() DESC
 		LIMIT $1
 	`
 	return r.getMovies(query)

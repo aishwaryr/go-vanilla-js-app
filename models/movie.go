@@ -2,7 +2,7 @@ package models
 
 type Movie struct {
 	ID          int
-	TMBD_ID     int
+	TMDB_ID     int
 	Title       string
 	Tagline     string
 	ReleaseYear int

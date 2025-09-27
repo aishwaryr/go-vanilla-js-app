@@ -2,12 +2,14 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 
 	_ "github.com/lib/pq"
 
+	"fem.com/movie-site/data"
 	"fem.com/movie-site/handlers"
 	"fem.com/movie-site/logger"
 
@@ -27,11 +29,14 @@ func main() {
 	// Log Initializer
 	logInstance := initializeLogger()
 
-	// Environmental Vatiables
+	movieHandler := handlers.MovieHandler{}
+
+	// Environmental Variables
 	if err := godotenv.Load(); err != nil {
-		log.Fatal("No .env file was available")
+		log.Printf("No .env file found or failed to load: %v", err)
 	}
-	// Connect to the DB
+
+	// Databse connection
 	dbConnStr := os.Getenv("DATABASE_URL")
 	if dbConnStr == "" {
 		log.Fatal("DATABASE_URL not set")
@@ -42,12 +47,18 @@ func main() {
 	}
 	defer db.Close()
 
-	movieHandler := handlers.MovieHandler{}
+	// Initialize Data Repository for Movies
+	movieRepo, err := data.NewMovieRepository(db, logInstance)
+	if err != nil {
+		log.Fatalf("Failed to initialize Repository")
+	}
 
 	http.HandleFunc("/api/movies/top", movieHandler.GetTopMovies)
 	http.HandleFunc("/api/movies/random", movieHandler.GetRandomMovies)
 
+	// Handler for static files (frontend)
 	http.Handle("/", http.FileServer(http.Dir("public")))
+	fmt.Println("Serving the files")
 
 	const addr = ":8080"
 	if err := http.ListenAndServe(addr, nil); err != nil {
