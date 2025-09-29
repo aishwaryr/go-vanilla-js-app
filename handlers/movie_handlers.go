@@ -21,7 +21,7 @@ func (h *MovieHandler) GetTopMovies(w http.ResponseWriter, r *http.Request) {
 	movies := []models.Movie{
 		{
 			ID:          1,
-			TMBD_ID:     181,
+			TMDB_ID:     181,
 			Title:       "The Hacker",
 			ReleaseYear: 2022,
 			Genres:      []models.Genre{{ID: 1, Name: "Thriller"}},
@@ -30,7 +30,7 @@ func (h *MovieHandler) GetTopMovies(w http.ResponseWriter, r *http.Request) {
 		},
 		{
 			ID:          2,
-			TMBD_ID:     181,
+			TMDB_ID:     181,
 			Title:       "The Dark Knight",
 			ReleaseYear: 2008,
 			Genres:      []models.Genre{{ID: 2, Name: "Drama"}},
@@ -45,7 +45,7 @@ func (h *MovieHandler) GetRandomMovies(w http.ResponseWriter, r *http.Request) {
 	movies := []models.Movie{
 		{
 			ID:          1,
-			TMBD_ID:     181,
+			TMDB_ID:     181,
 			Title:       "The Hacker Random",
 			ReleaseYear: 2022,
 			Genres:      []models.Genre{{ID: 1, Name: "Thriller"}},
@@ -54,7 +54,7 @@ func (h *MovieHandler) GetRandomMovies(w http.ResponseWriter, r *http.Request) {
 		},
 		{
 			ID:          2,
-			TMBD_ID:     181,
+			TMDB_ID:     181,
 			Title:       "The Dark Knight Random",
 			ReleaseYear: 2008,
 			Genres:      []models.Genre{{ID: 2, Name: "Drama"}},
