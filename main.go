@@ -29,8 +29,6 @@ func main() {
 	// Log Initializer
 	logInstance := initializeLogger()
 
-	movieHandler := handlers.MovieHandler{}
-
 	// Environmental Variables
 	if err := godotenv.Load(); err != nil {
 		log.Printf("No .env file found or failed to load: %v", err)
@@ -52,6 +50,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to initialize Repository")
 	}
+
+	movieHandler := handlers.MovieHandler{}
+	movieHandler.Storage = movieRepo
+	movieHandler.Logger = logInstance
 
 	http.HandleFunc("/api/movies/top", movieHandler.GetTopMovies)
 	http.HandleFunc("/api/movies/random", movieHandler.GetRandomMovies)
